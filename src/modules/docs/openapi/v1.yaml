@@ -1,0 +1,190 @@
+openapi: 3.0.0
+info:
+  title: LawCasPro Financial Infrastructure API
+  version: 1.0.0
+  description: Public API for integrating Legal Financial Services (Invoice, Trust Account, LHDN)
+servers:
+  - url: https://api.lawcaspro.com/api/public/v1
+    description: Production Server
+  - url: https://staging-api.lawcaspro.com/api/public/v1
+    description: Staging Server
+
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: Bearer <your_sk_live_key>
+
+  schemas:
+    # --- Base Response Envelope ---
+    ApiResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        data:
+          type: object
+        meta:
+          type: object
+          properties:
+            request_id:
+              type: string
+        error:
+          type: object
+          nullable: true
+          properties:
+            code:
+              type: string
+            message:
+              type: string
+
+    # --- Domain Objects ---
+    FinancialDocument:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        document_no:
+          type: string
+        document_type:
+          type: string
+          enum: [invoice, quotation, credit_note]
+        total_amount:
+          type: number
+        status:
+          type: string
+        lhdn_status:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+
+    CreateDocumentRequest:
+      type: object
+      required:
+        - client_id
+        - document_type
+        - items
+      properties:
+        client_id:
+          type: string
+          format: uuid
+        case_id:
+          type: string
+          format: uuid
+        document_type:
+          type: string
+          enum: [invoice, quotation]
+        currency:
+          type: string
+          default: MYR
+        items:
+          type: array
+          items:
+            type: object
+            required:
+              - description
+              - unit_price
+              - qty
+            properties:
+              description:
+                type: string
+              unit_price:
+                type: number
+              qty:
+                type: number
+              tax_code:
+                type: string
+
+security:
+  - ApiKeyAuth: []
+
+paths:
+  /documents:
+    post:
+      summary: Create a Financial Document
+      description: Create an Invoice or Quotation. If Invoice, it can trigger LHDN flow.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateDocumentRequest'
+      responses:
+        '201':
+          description: Created successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/FinancialDocument'
+        '400':
+          description: Validation Error
+        '401':
+          description: Invalid API Key
+        '403':
+          description: Quota Exceeded or Feature Disabled
+  
+  /lhdn/submit:
+    post:
+      summary: Submit Document to LHDN
+      description: Asynchronously submit an existing invoice to MyInvois. Returns a submission ID to poll.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [document_id]
+              properties:
+                document_id:
+                  type: string
+                  format: uuid
+      responses:
+        '200':
+          description: Submission Queued
+          content:
+             application/json:
+               schema:
+                 $ref: '#/components/schemas/ApiResponse'
+
+  /payment/link:
+    post:
+      summary: Generate Payment Link
+      description: Create a Stripe/Billplz payment link for an invoice.
+      requestBody:
+        required: true
+        content:
+          application/json:
+             schema:
+               type: object
+               required: [document_id]
+               properties:
+                 document_id:
+                   type: string
+                   format: uuid
+                 gateway:
+                   type: string
+                   enum: [stripe, billplz]
+      responses:
+        '200':
+          description: Link Generated
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          payment_url:
+                            type: string
