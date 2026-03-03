@@ -56,7 +56,8 @@ class PermissionService {
     }
 
     const roleId = userRoleData.role_id;
-    const roleName = userRoleData.roles?.name || 'Unknown';
+    const roles = userRoleData.roles as unknown as { name: string }[];
+    const roleName = roles?.[0]?.name || 'Unknown';
 
     // Fetch permissions for this role
     const { data: permsData, error: permError } = await supabase

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabaseClient';
-import { formatDateTime } from '@/utils/formatters';
+import { formatDate } from '@/utils/formatters';
 
 interface AuditLog {
   id: string;
