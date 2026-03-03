@@ -62,7 +62,7 @@ export const AuditLogViewer: React.FC<{ caseId: string }> = ({ caseId }) => {
             {logs.map((log) => (
               <tr key={log.id} className="hover:bg-gray-50 transition-colors">
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  {formatDateTime(log.changed_at)}
+                  {formatDate(log.changed_at)}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm">
                   <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">

@@ -1,4 +1,4 @@
-import { supabase } from '../../../lib/supabaseClient';
+import { supabase } from '@/lib/supabaseClient';
 import { logger } from '../../modules/infra/logging/logger.service';
 
 export class LitigationService {

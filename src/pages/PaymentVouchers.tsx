@@ -31,6 +31,9 @@ type PaymentVoucher = {
   approved_at?: string
   paid_at?: string
   file_returned_at?: string
+  approved_by?: string
+  categorized_by?: string
+  paid_by?: string
   template_id?: string
   // Linked Cases (Joined)
   payment_voucher_cases?: {
@@ -560,9 +563,9 @@ export default function PaymentVouchers({ embedded = false }: { embedded?: boole
                      <Search size={16} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400" />
                      
                      {/* Search Results Dropdown */}
-                     {searchResults.length > 0 && caseSearchTerm.length >= 2 && (
+                     {caseResults.length > 0 && caseSearchTerm.length >= 2 && (
                          <div className="absolute top-full left-0 w-full bg-white border border-gray-200 shadow-xl rounded-lg mt-1 z-50 max-h-40 overflow-y-auto">
-                             {searchResults.map(c => (
+                             {caseResults.map(c => (
                                  <button 
                                      key={c.id}
                                      onClick={() => {

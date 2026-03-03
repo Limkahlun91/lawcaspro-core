@@ -1,4 +1,4 @@
-import { supabase } from '../../lib/supabaseClient';
+import { supabase } from '@/lib/supabaseClient';
 
 export type LogLevel = 'info' | 'warn' | 'error';
 export type LogDomain = 'financial' | 'lhdn' | 'billing' | 'infra' | 'security';

@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabaseClient'
 import { documentFactory, TempCaseStaging } from '../services/DocumentFactoryService'
-import { Check, X, AlertTriangle, ArrowLeft, Loader } from 'lucide-react'
+import { Check, X, AlertTriangle, ArrowLeft, Loader, Zap } from 'lucide-react'
 
 export default function AIIntakeConfirmation() {
   const { stagingId } = useParams<{ stagingId: string }>()
