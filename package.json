@@ -24,7 +24,7 @@
     "handlebars": "^4.7.8",
     "html-docx-js-typescript": "^0.1.5",
     "html2canvas": "^1.4.1",
-    "i18next": "^23.7.7",
+    "i18next": "^25.8.14",
     "i18next-browser-languagedetector": "^7.2.0",
     "jsonwebtoken": "^9.0.3",
     "jspdf": "^4.2.0",
