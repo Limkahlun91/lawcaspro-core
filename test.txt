@@ -1,0 +1,3 @@
+Commit changes
+Create new branch
+Create pull request
